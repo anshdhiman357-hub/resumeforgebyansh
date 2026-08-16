@@ -59,7 +59,7 @@ function AuthPage() {
   async function signUp(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -70,6 +70,10 @@ function AuthPage() {
     setBusy(false);
     if (error) {
       toast.error(error.message);
+      return;
+    }
+    if (!data.session) {
+      toast.success("Account created. Check your inbox to confirm your email, then sign in.");
       return;
     }
     toast.success("Account created. You can start building now.");
