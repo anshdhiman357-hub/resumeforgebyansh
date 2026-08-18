@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   Download,
   FileDown,
+  ImagePlus,
   Loader2,
   Plus,
   Save,
@@ -26,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { analyzeAts, generateResumeDraft, type AtsResult } from "@/lib/ai.functions";
 import {
+  emptyCertification,
   emptyEducation,
   emptyExperience,
   emptyProject,
