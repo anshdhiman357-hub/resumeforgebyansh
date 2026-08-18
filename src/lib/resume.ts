@@ -20,6 +20,11 @@ export type Project = {
   link: string;
 };
 
+export type Certification = {
+  name: string;
+  image: string;
+};
+
 export type ResumeContent = {
   basics: {
     fullName: string;
