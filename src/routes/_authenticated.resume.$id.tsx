@@ -503,16 +503,104 @@ function ResumeEditor() {
                       onChange={(e) => update((d) => void (d.skills = splitList(e.target.value)))}
                     />
                   </div>
-                  <div>
-                    <Label className="text-xs">Certifications</Label>
-                    <Textarea
-                      className="mt-2"
-                      rows={2}
-                      value={resume.certifications.join(", ")}
-                      onChange={(e) =>
-                        update((d) => void (d.certifications = splitList(e.target.value)))
-                      }
-                    />
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs">Certifications</Label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          update((d) => void d.certifications.push(emptyCertification()))
+                        }
+                      >
+                        <Plus className="size-4" /> Add
+                      </Button>
+                    </div>
+                    {resume.certifications.map((cert, index) => (
+                      <div key={index} className="rounded-lg border border-border p-3">
+                        <div className="flex items-center gap-2">
+                          <Input
+                            placeholder="Certification name"
+                            value={cert.name}
+                            onChange={(e) =>
+                              update((d) => {
+                                const item = d.certifications[index];
+                                if (item) item.name = e.target.value;
+                              })
+                            }
+                          />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => update((d) => void d.certifications.splice(index, 1))}
+                          >
+                            <Trash2 className="size-4" />
+                          </Button>
+                        </div>
+                        <div className="mt-3 flex items-center gap-3">
+                          {cert.image ? (
+                            <img
+                              src={cert.image}
+                              alt={`${cert.name || "Certificate"} preview`}
+                              className="h-14 w-20 rounded border border-border object-cover"
+                            />
+                          ) : null}
+                          <div className="flex flex-wrap gap-2">
+                            <input
+                              id={`cert-image-${index}`}
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                e.target.value = "";
+                                if (!file) return;
+                                if (file.size > 1_500_000) {
+                                  toast.error("Image too large — please use one under 1.5 MB.");
+                                  return;
+                                }
+                                const reader = new FileReader();
+                                reader.onload = () => {
+                                  const result = String(reader.result ?? "");
+                                  update((d) => {
+                                    const item = d.certifications[index];
+                                    if (item) item.image = result;
+                                  });
+                                };
+                                reader.readAsDataURL(file);
+                              }}
+                            />
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                document.getElementById(`cert-image-${index}`)?.click()
+                              }
+                            >
+                              <ImagePlus className="size-4" />
+                              {cert.image ? "Replace image" : "Add image"}
+                            </Button>
+                            {cert.image ? (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() =>
+                                  update((d) => {
+                                    const item = d.certifications[index];
+                                    if (item) item.image = "";
+                                  })
+                                }
+                              >
+                                Remove image
+                              </Button>
+                            ) : null}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {resume.certifications.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No certifications yet.</p>
+                    ) : null}
                   </div>
                 </CardContent>
               </Card>
