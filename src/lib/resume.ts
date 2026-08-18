@@ -20,6 +20,11 @@ export type Project = {
   link: string;
 };
 
+export type Certification = {
+  name: string;
+  image: string;
+};
+
 export type ResumeContent = {
   basics: {
     fullName: string;
@@ -35,7 +40,7 @@ export type ResumeContent = {
   education: Education[];
   projects: Project[];
   skills: string[];
-  certifications: string[];
+  certifications: Certification[];
 };
 
 export const emptyResume = (): ResumeContent => ({
@@ -84,8 +89,18 @@ export function normalizeResume(raw: unknown): ResumeContent {
     education: Array.isArray(value.education) ? value.education : [],
     projects: Array.isArray(value.projects) ? value.projects : [],
     skills: Array.isArray(value.skills) ? value.skills : [],
-    certifications: Array.isArray(value.certifications) ? value.certifications : [],
+    certifications: Array.isArray(value.certifications)
+      ? (value.certifications as unknown[]).map(normalizeCertification)
+      : [],
   };
+}
+
+export const emptyCertification = (): Certification => ({ name: "", image: "" });
+
+function normalizeCertification(raw: unknown): Certification {
+  if (typeof raw === "string") return { name: raw, image: "" };
+  const value = (raw ?? {}) as Partial<Certification>;
+  return { name: value.name ?? "", image: value.image ?? "" };
 }
 
 /** Plain-text rendering used for ATS analysis and DOCX export. */
@@ -114,7 +129,14 @@ export function resumeToText(resume: ResumeContent): string {
   }
   if (resume.skills.length) lines.push("", "SKILLS", resume.skills.join(", "));
   if (resume.certifications.length)
-    lines.push("", "CERTIFICATIONS", resume.certifications.join(", "));
+    lines.push(
+      "",
+      "CERTIFICATIONS",
+      resume.certifications
+        .map((c) => c.name)
+        .filter(Boolean)
+        .join(", "),
+    );
 
   return lines.filter((line) => line !== undefined).join("\n");
 }
