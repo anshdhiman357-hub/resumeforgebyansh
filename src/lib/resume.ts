@@ -40,7 +40,7 @@ export type ResumeContent = {
   education: Education[];
   projects: Project[];
   skills: string[];
-  certifications: string[];
+  certifications: Certification[];
 };
 
 export const emptyResume = (): ResumeContent => ({
