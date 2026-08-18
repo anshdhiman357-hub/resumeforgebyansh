@@ -129,7 +129,14 @@ export function resumeToText(resume: ResumeContent): string {
   }
   if (resume.skills.length) lines.push("", "SKILLS", resume.skills.join(", "));
   if (resume.certifications.length)
-    lines.push("", "CERTIFICATIONS", resume.certifications.join(", "));
+    lines.push(
+      "",
+      "CERTIFICATIONS",
+      resume.certifications
+        .map((c) => c.name)
+        .filter(Boolean)
+        .join(", "),
+    );
 
   return lines.filter((line) => line !== undefined).join("\n");
 }
