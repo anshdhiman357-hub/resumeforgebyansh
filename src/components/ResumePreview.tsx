@@ -89,7 +89,31 @@ export function ResumePreview({ resume }: { resume: ResumeContent }) {
 
       {resume.certifications.length ? (
         <Section title="Certifications">
-          <p className="text-sm leading-relaxed">{resume.certifications.join(" • ")}</p>
+          <p className="text-sm leading-relaxed">
+            {resume.certifications
+              .map((c) => c.name)
+              .filter(Boolean)
+              .join(" • ")}
+          </p>
+          {resume.certifications.some((c) => c.image) ? (
+            <div className="mt-3 flex flex-wrap gap-3">
+              {resume.certifications
+                .filter((c) => c.image)
+                .map((c, index) => (
+                  <figure key={index} className="w-40">
+                    <img
+                      src={c.image}
+                      alt={c.name ? `${c.name} certificate` : "Certificate"}
+                      loading="lazy"
+                      className="h-24 w-full rounded border border-paper-foreground/20 object-cover"
+                    />
+                    {c.name ? (
+                      <figcaption className="mt-1 text-[10px] opacity-70">{c.name}</figcaption>
+                    ) : null}
+                  </figure>
+                ))}
+            </div>
+          ) : null}
         </Section>
       ) : null}
     </div>
