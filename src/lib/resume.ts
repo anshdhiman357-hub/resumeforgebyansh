@@ -89,8 +89,18 @@ export function normalizeResume(raw: unknown): ResumeContent {
     education: Array.isArray(value.education) ? value.education : [],
     projects: Array.isArray(value.projects) ? value.projects : [],
     skills: Array.isArray(value.skills) ? value.skills : [],
-    certifications: Array.isArray(value.certifications) ? value.certifications : [],
+    certifications: Array.isArray(value.certifications)
+      ? (value.certifications as unknown[]).map(normalizeCertification)
+      : [],
   };
+}
+
+export const emptyCertification = (): Certification => ({ name: "", image: "" });
+
+function normalizeCertification(raw: unknown): Certification {
+  if (typeof raw === "string") return { name: raw, image: "" };
+  const value = (raw ?? {}) as Partial<Certification>;
+  return { name: value.name ?? "", image: value.image ?? "" };
 }
 
 /** Plain-text rendering used for ATS analysis and DOCX export. */
