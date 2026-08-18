@@ -790,11 +790,12 @@ function ResumeEditor() {
           </Tabs>
         </div>
 
-        <div className="lg:sticky lg:top-24 lg:self-start">
-          <ResumePreview resume={resume} />
+          <div className="lg:sticky lg:top-32 lg:self-start">
+            <ResumePreview resume={resume} />
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 
