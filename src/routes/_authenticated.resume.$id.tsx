@@ -199,33 +199,43 @@ function ResumeEditor() {
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8">
-      <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
-        <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/dashboard" })}>
-          <ArrowLeft className="size-4" /> My resumes
-        </Button>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={downloadDocx}>
-            <FileDown className="size-4" /> DOCX
+    <div className="relative min-h-screen print:bg-transparent">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-hero opacity-90 print:hidden"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[radial-gradient(60%_100%_at_50%_0%,color-mix(in_oklab,var(--primary)_28%,transparent),transparent)] print:hidden"
+      />
+      <main className="mx-auto max-w-7xl px-4 py-8">
+        <div className="sticky top-16 z-30 -mx-2 mb-2 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/60 bg-background/70 px-3 py-2 backdrop-blur-md print:hidden">
+          <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/dashboard" })}>
+            <ArrowLeft className="size-4" /> My resumes
           </Button>
-          <Button variant="outline" size="sm" onClick={() => window.print()}>
-            <Download className="size-4" /> PDF
-          </Button>
-          <Button size="sm" onClick={save} disabled={saving}>
-            {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-            Save
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" onClick={downloadDocx}>
+              <FileDown className="size-4" /> DOCX
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => window.print()}>
+              <Download className="size-4" /> PDF
+            </Button>
+            <Button size="sm" className="shadow-glow" onClick={save} disabled={saving}>
+              {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+              Save
+            </Button>
+          </div>
         </div>
-      </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <div className="print:hidden">
-          <Tabs defaultValue="content">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="content">Content</TabsTrigger>
-              <TabsTrigger value="ai">AI assist</TabsTrigger>
-              <TabsTrigger value="ats">ATS check</TabsTrigger>
-            </TabsList>
+        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="print:hidden [&_[data-slot=card]]:border-border/60 [&_[data-slot=card]]:bg-card/70 [&_[data-slot=card]]:backdrop-blur-sm [&_[data-slot=card]]:transition-shadow [&_[data-slot=card]:hover]:shadow-elevated">
+            <Tabs defaultValue="content">
+              <TabsList className="grid w-full grid-cols-3 border border-border/60 bg-card/60 backdrop-blur">
+                <TabsTrigger value="content">Content</TabsTrigger>
+                <TabsTrigger value="ai">AI assist</TabsTrigger>
+                <TabsTrigger value="ats">ATS check</TabsTrigger>
+              </TabsList>
+
 
             {/* ---------------- Content ---------------- */}
             <TabsContent value="content" className="space-y-5 pt-5">
