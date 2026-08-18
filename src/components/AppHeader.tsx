@@ -13,8 +13,14 @@ export function AppHeader({ authed = false }: { authed?: boolean }) {
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <FileText className="size-4" />
           </span>
-          <span className="font-display text-lg font-semibold tracking-tight">ResumeForge</span>
+          <span className="flex flex-col leading-none">
+            <span className="font-display text-lg font-semibold tracking-tight">ResumeForge</span>
+            <span className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              by Ansh
+            </span>
+          </span>
         </Link>
+
 
         <nav className="flex items-center gap-2">
           {authed ? (
