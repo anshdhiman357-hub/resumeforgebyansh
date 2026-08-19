@@ -50,9 +50,7 @@ This project was built with [Lovable](https://lovable.dev).
 
 **Live app**: https://resumeforgebyansh.lovable.app
 
-## Build with Lovable
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/1c7668c1-cfe0-401b-943e-d79950470e97).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
 - **Stay in sync**: every change made in Lovable is committed straight to this repository.
