@@ -37,7 +37,7 @@ import {
   type ResumeContent,
 } from "@/lib/resume";
 
-export const Route = createFileRoute("/_authenticated/resume/$id")({
+export const Route = createFileRoute("/resume/$id")({
   head: () => ({
     meta: [
       { title: "Resume editor & ATS check — ResumeForge" },
