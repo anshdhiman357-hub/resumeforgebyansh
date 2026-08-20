@@ -46,9 +46,9 @@ Conclusion
 
 The platform combines AI-powered resume generation and ATS analysis to help users create recruiter-friendly resumes and improve career opportunities.
 
-This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://resumeforgebyansh.lovable.app
+
+**Live app**: https://resumeforgebyansh-oqltz2c0j-brumbs.vercel.app/
 
 
 
