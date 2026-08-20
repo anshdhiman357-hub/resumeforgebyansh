@@ -1,4 +1,3 @@
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -16,7 +15,6 @@ export type AiDraft = {
 };
 
 export const generateResumeDraft = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => DraftInput.parse(input))
   .handler(async ({ data }): Promise<AiDraft> => {
     const { streamText } = await import("ai");
@@ -68,7 +66,6 @@ export type AtsResult = {
 };
 
 export const analyzeAts = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => AtsInput.parse(input))
   .handler(async ({ data }): Promise<AtsResult> => {
     const { streamText } = await import("ai");

@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -24,7 +23,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/integrations/supabase/client";
+import { AppHeader } from "@/components/AppHeader";
+import { getResume, saveResume } from "@/lib/resume-store";
 import { analyzeAts, generateResumeDraft, type AtsResult } from "@/lib/ai.functions";
 import {
   emptyCertification,
@@ -76,21 +76,21 @@ function ResumeEditor() {
   const [skillsHint, setSkillsHint] = useState("");
   const [ats, setAts] = useState<AtsResult | null>(null);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["resume", id],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("resumes").select("*").eq("id", id).single();
-      if (error) throw error;
-      return data;
-    },
-  });
+  const [loading, setLoading] = useState(true);
+  const [missing, setMissing] = useState(false);
 
   useEffect(() => {
-    if (!data) return;
-    setTitle(data.title);
-    setTargetRole(data.target_role ?? "");
-    setResume(normalizeResume(data.content));
-  }, [data]);
+    const stored = getResume(id);
+    if (!stored) {
+      setMissing(true);
+      setLoading(false);
+      return;
+    }
+    setTitle(stored.title);
+    setTargetRole(stored.target_role);
+    setResume(normalizeResume(stored.content));
+    setLoading(false);
+  }, [id]);
 
   const resumeText = useMemo(() => (resume ? resumeToText(resume) : ""), [resume]);
 
@@ -103,18 +103,11 @@ function ResumeEditor() {
     });
   }
 
-  async function save() {
+  function save() {
     if (!resume) return;
     setSaving(true);
-    const { error } = await supabase
-      .from("resumes")
-      .update({ title, target_role: targetRole, content: resume })
-      .eq("id", id);
+    saveResume(id, { title, target_role: targetRole, content: resume });
     setSaving(false);
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
     toast.success("Resume saved");
   }
 
@@ -145,19 +138,6 @@ function ResumeEditor() {
     try {
       const result = await runAts({ data: { resumeText, jobDescription, targetRole } });
       setAts(result);
-      const { data: userData } = await supabase.auth.getUser();
-      if (userData.user) {
-        await supabase.from("ats_reports").insert({
-          user_id: userData.user.id,
-          resume_id: id,
-          job_description: jobDescription,
-          score: result.score,
-          section_scores: result.sectionScores,
-          matched_keywords: result.matchedKeywords,
-          missing_keywords: result.missingKeywords,
-          suggestions: result.suggestions,
-        });
-      }
     } catch (err) {
       toast.error(readableError(err));
     } finally {
@@ -179,7 +159,7 @@ function ResumeEditor() {
     URL.revokeObjectURL(url);
   }
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="size-6 animate-spin text-primary" />
@@ -187,7 +167,7 @@ function ResumeEditor() {
     );
   }
 
-  if (error || !resume) {
+  if (missing || !resume) {
     return (
       <div className="mx-auto max-w-md px-4 py-20 text-center">
         <p className="text-sm text-muted-foreground">This resume could not be loaded.</p>
@@ -200,6 +180,9 @@ function ResumeEditor() {
 
   return (
     <div className="relative min-h-screen print:bg-transparent">
+      <div className="print:hidden">
+        <AppHeader />
+      </div>
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 bg-gradient-hero opacity-90 print:hidden"
