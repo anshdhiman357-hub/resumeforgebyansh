@@ -11,7 +11,6 @@ import {
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -77,12 +76,11 @@ const steps = [
 ];
 
 function Landing() {
-  const { session } = useAuth();
-  const primaryTo = session ? "/dashboard" : "/auth";
+  const primaryTo = "/dashboard";
 
   return (
     <div className="min-h-screen">
-      <AppHeader authed={Boolean(session)} />
+      <AppHeader />
 
       <main>
         <section className="surface-hero border-b border-border/60">
@@ -111,7 +109,7 @@ function Landing() {
                 </Button>
               </div>
               <p className="mt-4 text-xs text-muted-foreground">
-                Free to start · No credit card required
+                Free to use · No sign-up required
               </p>
             </div>
           </div>
